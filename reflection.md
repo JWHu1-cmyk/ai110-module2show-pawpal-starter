@@ -10,13 +10,18 @@
 
 **a. Initial design**
 
-- Briefly describe your initial UML design.
-- What classes did you include, and what responsibilities did you assign to each?
+The initial UML design has four classes:
+
+- **Owner** — Represents the pet owner. Stores their name, how many minutes they have available per day, and a preferences dictionary. Responsible for updating its own profile via `update_profile()`.
+- **CareTask** (dataclass) — A single care activity such as a walk, feeding, or grooming session. Each task has a title, category, duration in minutes, and a priority level. It can edit its own fields and compare priority against another task.
+- **Pet** (dataclass) — Represents one pet owned by the Owner. Holds a name, species, optional notes, and a list of CareTask objects. Responsible for adding tasks and listing them.
+- **Planner** — The scheduling engine. It reads constraints from the Owner (available time, preferences), selects and orders CareTask objects for a given Pet, and produces a daily plan. It also generates a human-readable explanation of its reasoning. A private helper `_fits_within_budget()` checks whether a set of tasks fits the owner's time budget.
+
+Relationships: Owner owns zero-or-more Pets; each Pet has zero-or-more CareTasks; Planner depends on all three to build a plan.
 
 **b. Design changes**
 
-- Did your design change during implementation?
-- If yes, describe at least one change and why you made it.
+Yes. After reviewing the skeleton against the UML, I noticed that the `Owner` class had no `pets` field even though the UML specifies an `Owner "1" --> "0..*" Pet` relationship. I added a `pets: list[Pet]` field to `Owner` so that the one-to-many ownership relationship is represented directly in code, matching the UML diagram. Without this, there would be no way to navigate from an Owner to their Pets without passing them around separately.
 
 ---
 
