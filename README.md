@@ -22,6 +22,15 @@ Your final app should:
 - Display the plan clearly (and ideally explain the reasoning)
 - Include tests for the most important scheduling behaviors
 
+## Smarter Scheduling
+
+Beyond basic plan generation, PawPal+ includes several scheduling enhancements:
+
+- **Sort by time** — Tasks can be sorted by their scheduled `HH:MM` time so the daily plan reads in chronological order.
+- **Filter by status or pet** — View only incomplete tasks, completed tasks, or tasks belonging to a specific pet.
+- **Recurring tasks** — Tasks with a `daily` or `weekly` frequency automatically generate a new occurrence (with the correct next due date via `timedelta`) when marked complete.
+- **Conflict detection** — The planner scans for overlapping time slots across all pets and returns warning messages instead of crashing, so the owner can resolve scheduling collisions.
+
 ## Getting started
 
 ### Setup

@@ -34,8 +34,9 @@ Yes. After reviewing the skeleton against the UML, I noticed that the `Owner` cl
 
 **b. Tradeoffs**
 
-- Describe one tradeoff your scheduler makes.
-- Why is that tradeoff reasonable for this scenario?
+The scheduler uses a **greedy priority-first** algorithm: it sorts all tasks by priority (highest first) and adds them one by one until the owner's time budget is full. This means a high-priority task is always chosen over a lower-priority one, even if skipping it would allow two smaller tasks to fit and cover more total care. For example, a 45-minute walk (priority 5) will be chosen over a 20-minute feeding + 20-minute grooming (priority 4 each), even though the two smaller tasks together provide broader coverage.
+
+This tradeoff is reasonable because in pet care, missing a critical task (like medication or a walk for a high-energy dog) is worse than missing two lower-priority ones. The owner can always adjust priorities if they disagree with the plan. A more optimal knapsack-style algorithm would be harder to understand and explain, which conflicts with the app's goal of providing clear reasoning for its choices.
 
 ---
 
