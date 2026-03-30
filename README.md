@@ -1,37 +1,21 @@
 # PawPal+ (Module 2 Project)
 
-You are building **PawPal+**, a Streamlit app that helps a pet owner plan care tasks for their pet.
+**PawPal+** is a Streamlit-powered pet care planner that helps busy owners stay on top of walks, feedings, grooming, and more. It builds a priority-based daily schedule that fits within a configurable time budget, flags scheduling conflicts, and automatically handles recurring tasks.
 
-## Scenario
+## Demo
 
-A busy pet owner needs help staying consistent with pet care. They want an assistant that can:
+<a href="/course_images/ai110/demo.png" target="_blank"><img src='/course_images/ai110/demo.png' title='PawPal App' width='' alt='PawPal App' class='center-block' /></a>
 
-- Track pet care tasks (walks, feeding, meds, enrichment, grooming, etc.)
-- Consider constraints (time available, priority, owner preferences)
-- Produce a daily plan and explain why it chose that plan
+## Features
 
-Your job is to design the system first (UML), then implement the logic in Python, then connect it to the Streamlit UI.
-
-## What you will build
-
-Your final app should:
-
-- Let a user enter basic owner + pet info
-- Let a user add/edit tasks (duration + priority at minimum)
-- Generate a daily schedule/plan based on constraints and priorities
-- Display the plan clearly (and ideally explain the reasoning)
-- Include tests for the most important scheduling behaviors
-
-## Smarter Scheduling
-
-Beyond basic plan generation, PawPal+ includes several scheduling enhancements:
-
-- **Sort by time** — Tasks can be sorted by their scheduled `HH:MM` time so the daily plan reads in chronological order.
-- **Filter by status or pet** — View only incomplete tasks, completed tasks, or tasks belonging to a specific pet.
+- **Priority-based daily planning** — The Planner greedily selects tasks by priority (highest first) until the owner's available minutes are exhausted, then explains what was scheduled and what was skipped.
+- **Sorting by time** — Tasks are sorted by their scheduled `HH:MM` time so the daily plan reads in chronological order. Tasks without a time slot sort to the end.
+- **Filtering by status or pet** — View only incomplete tasks, completed tasks, or tasks belonging to a specific pet.
 - **Recurring tasks** — Tasks with a `daily` or `weekly` frequency automatically generate a new occurrence (with the correct next due date via `timedelta`) when marked complete.
-- **Conflict detection** — The planner scans for overlapping time slots across all pets and returns warning messages instead of crashing, so the owner can resolve scheduling collisions.
+- **Conflict detection** — The planner scans for overlapping time slots and surfaces `st.warning` messages so the owner can resolve collisions before generating a plan.
+- **Task management** — Add tasks with category, time, duration, priority, and frequency. Edit existing tasks or mark them complete directly from the UI.
 
-## Getting started
+## Getting Started
 
 ### Setup
 
@@ -39,6 +23,12 @@ Beyond basic plan generation, PawPal+ includes several scheduling enhancements:
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
+```
+
+### Run the app
+
+```bash
+streamlit run app.py
 ```
 
 ### Suggested workflow

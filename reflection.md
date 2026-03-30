@@ -29,8 +29,7 @@ Yes. After reviewing the skeleton against the UML, I noticed that the `Owner` cl
 
 **a. Constraints and priorities**
 
-- What constraints does your scheduler consider (for example: time, priority, preferences)?
-- How did you decide which constraints mattered most?
+The scheduler considers three main constraints: the owner's **available minutes per day** (hard cap on total task duration), each task's **priority level** (1–5, determines selection order), and **scheduled time slots** (used for conflict detection and chronological display). Priority was treated as the most important constraint because in pet care, missing a critical task like medication or an exercise walk has worse consequences than missing a lower-priority grooming session. Time budget acts as the hard boundary—no plan exceeds it.
 
 **b. Tradeoffs**
 
@@ -44,13 +43,13 @@ This tradeoff is reasonable because in pet care, missing a critical task (like m
 
 **a. How you used AI**
 
-- How did you use AI tools during this project (for example: design brainstorming, debugging, refactoring)?
-- What kinds of prompts or questions were most helpful?
+AI was used across every phase of the project: UML design brainstorming, skeleton generation, implementing scheduling algorithms, writing the test suite, and wiring the Streamlit UI. The most effective approach was using **separate chat sessions for each phase**—one for design, one for core logic, one for testing, and one for UI polish. This kept each conversation focused: the design session stayed at the architecture level without drifting into implementation details, the testing session could focus purely on edge cases without being distracted by UI concerns, and the UI session could reference the finalized backend without revisiting design decisions. It also prevented context overload—each session had a clear goal and a clean starting point.
+
+The most helpful prompts were specific and constrained, like "What are the most important edge cases to test for a pet scheduler with sorting and recurring tasks?" or referencing a specific file and asking for updates to the UML. Open-ended prompts like "make this better" were less useful because they invited unnecessary refactoring.
 
 **b. Judgment and verification**
 
-- Describe one moment where you did not accept an AI suggestion as-is.
-- How did you evaluate or verify what the AI suggested?
+One clear example: when generating tests, Copilot suggested adding extensive exception-handling tests (e.g., testing that invalid time formats like "25:99" raise errors, or that negative durations are rejected). I rejected these because the current system trusts internal input—validation happens at the UI boundary in Streamlit via `number_input` constraints and text input placeholders, not inside the data classes. Adding defensive checks to `CareTask` would have been speculative complexity for scenarios that the actual app flow prevents. I verified this by tracing the data path: user input flows through Streamlit widgets (which enforce types and ranges) into `CareTask` constructors, so the internal code never receives malformed data.
 
 ---
 
@@ -58,13 +57,13 @@ This tradeoff is reasonable because in pet care, missing a critical task (like m
 
 **a. What you tested**
 
-- What behaviors did you test?
-- Why were these tests important?
+The 20-test suite covers five areas: (1) **Sorting correctness**—tasks sort chronologically, tasks without a time slot land at the end. (2) **Recurrence logic**—daily tasks advance by one day, weekly by seven, one-time tasks return `None`. (3) **Conflict detection**—overlapping times produce warnings, non-overlapping times produce none, completed tasks are excluded. (4) **Daily plan budget**—highest-priority tasks are selected first, the budget is never exceeded, and an empty task list is handled gracefully. (5) **Filtering and aggregation**—`filter_by_status`, `filter_by_pet`, `get_all_tasks`, `edit`, and `mark_task_complete` all behave correctly, including edge cases like unknown pet names.
+
+These tests matter because the scheduling logic is the core value of the app. A bug in conflict detection could let an owner double-book themselves; a bug in recurrence could silently drop a daily medication task.
 
 **b. Confidence**
 
-- How confident are you that your scheduler works correctly?
-- What edge cases would you test next if you had more time?
+Confidence: **5/5**. All 20 tests pass and cover both happy paths and meaningful edge cases. If I had more time, I would add tests for: (1) tasks that are back-to-back but don't overlap (boundary condition at exactly the end time), (2) a plan where every task exceeds the budget (should return an empty plan), and (3) multiple recurring tasks completing in sequence to verify the chain of next-occurrences stays correct over several cycles.
 
 ---
 
@@ -72,12 +71,12 @@ This tradeoff is reasonable because in pet care, missing a critical task (like m
 
 **a. What went well**
 
-- What part of this project are you most satisfied with?
+The part I'm most satisfied with is how cleanly the Planner class separates concerns. Sorting, filtering, conflict detection, and plan generation are all independent methods that compose well—the UI can call them in any combination without the methods knowing about each other. This made the Streamlit integration straightforward: each UI control maps to exactly one Planner method.
 
 **b. What you would improve**
 
-- If you had another iteration, what would you improve or redesign?
+If I had another iteration, I would: (1) support **multiple pets in the UI** with a pet selector and per-pet task views using `filter_by_pet`, (2) replace the greedy algorithm with a **knapsack-style optimizer** that maximizes total priority within the budget rather than just picking the highest single-priority tasks, and (3) add **persistent storage** (SQLite or JSON file) so tasks survive between Streamlit sessions.
 
 **c. Key takeaway**
 
-- What is one important thing you learned about designing systems or working with AI on this project?
+The most important lesson was that AI is a powerful accelerator but not a substitute for architectural judgment. Copilot could generate code faster than I could type it, but it had no sense of scope—it would happily add defensive error handling, extra abstractions, and features I didn't ask for. Being the "lead architect" meant constantly deciding what to keep, what to reject, and what to simplify. The real skill isn't prompting—it's knowing when the AI's suggestion is solving a problem that doesn't exist, and having the confidence to say no.
