@@ -2,6 +2,12 @@
 
 ## 1. System Design
 
+**Core user actions**
+
+- Enter or update basic owner and pet information so the assistant knows who is caring for which animal.
+- Add and edit care tasks (walks, feeding, medication, enrichment, grooming, and similar) with enough detail—such as duration and priority—for the system to weigh tradeoffs.
+- Generate a daily plan that respects constraints and priorities, view the schedule clearly, and read a short explanation of why the assistant chose that ordering.
+
 **a. Initial design**
 
 - Briefly describe your initial UML design.

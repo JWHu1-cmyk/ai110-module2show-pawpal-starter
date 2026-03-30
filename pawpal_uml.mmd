@@ -1,0 +1,39 @@
+classDiagram
+    direction TB
+
+    class Owner {
+        +str name
+        +int available_minutes_per_day
+        +dict preferences
+        +update_profile(name, available_minutes, preferences)
+    }
+
+    class Pet {
+        +str name
+        +str species
+        +str notes
+        +add_care_task(task)
+        +list_tasks()
+    }
+
+    class CareTask {
+        +str title
+        +str category
+        +int duration_minutes
+        +int priority
+        +edit(title, duration_minutes, priority)
+        +compare_priority(other) int
+    }
+
+    class Planner {
+        +str explanation
+        +build_daily_plan(owner, pet, tasks) list
+        +explain_plan(plan) str
+        +_fits_within_budget(tasks, minutes) bool
+    }
+
+    Owner "1" --> "0..*" Pet : owns
+    Pet "1" --> "0..*" CareTask : has
+    Planner ..> Owner : reads constraints from
+    Planner ..> Pet : associates plan with
+    Planner ..> CareTask : orders and selects
